@@ -106,6 +106,9 @@ try {
 
     # Restore can only target this fixture's unique process name and scratch Squirrel root.
     Assert-Equal ([Diagnostics.Process]::GetProcessesByName($config.BrandName).Length) 0 'Fixture process isolation'
+    Write-Host "Scratch: $scratch"
+Write-Host "Stub exists before Restore: $(Test-Path (Join-Path $scratch 'FixtureClient.exe.stub'))"
+Write-Host "Expected destination: $(Join-Path $scratch 'FixtureClient.exe')"
     $enhancerType.GetMethod('Restore').Invoke($enhancer, $null) | Out-Null
     foreach ($path in $backup, $unpackedBackup, $marker) {
         Assert-Equal (Test-Path $path) $false 'Restore clears patch state'
