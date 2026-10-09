@@ -44,18 +44,20 @@ namespace WandEnhancer.Core.Patching.Strategies.Static
 
         private static bool Rewrite(string exePath, string asarPath, string doneMessage, Action<string, ELogType> log)
         {
-            string newHash = AsarHeaderHash.Compute(asarPath);
-            if (newHash.Length != HashHexLength)
-            {
-                throw new Exception("Computed asar header hash is not 64 hex characters; cannot patch the integrity resource safely.");
-            }
 
-            byte[] anchor = Encoding.UTF8.GetBytes(AnchorPrefix);
-            long hashOffset = FindSoleHashOffset(exePath, anchor);
-            if (hashOffset < 0)
-            {
-                return false;
-            }
+byte[] anchor = Encoding.UTF8.GetBytes(AnchorPrefix);
+long hashOffset = FindSoleHashOffset(exePath, anchor);
+if (hashOffset < 0)
+{
+    return false;
+}
+
+string newHash = AsarHeaderHash.Compute(asarPath);
+if (newHash.Length != HashHexLength)
+{
+    throw new Exception("Computed asar header hash is not 64 hex characters; cannot patch the integrity resource safely.");
+}
+
 
             using (var stream = new FileStream(exePath, FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
             {
